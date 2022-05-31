@@ -4,15 +4,7 @@ import argparse
 import dcase_util
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    "-sed_eval_path",
-    required=True,
-    type=str,
-    help="folder path contains episode prediction",
-)
-parser.add_argument(
-    "-table", required=True, type=int, help="table index to reproduce, 1 or 2"
-)
+parser.add_argument("-dataset_path", required=True, type=str, help="root path for PodcastFillers dataset")
 args = parser.parse_args()
 
 
@@ -88,10 +80,8 @@ def sed_eval_reproduce(gt_folder, est_folder, t_collar=0.1):
 
 if __name__ == "__main__":
 
-    gt_folder = os.path.join(
-        args.sed_eval_path, "ground_truth", "Table" + str(args.table)
-    )
-    est_folder = os.path.join(
-        args.sed_eval_path, "AVCFillerNet_predictions", "Table" + str(args.table)
-    )
-    sed_eval_reproduce(gt_folder, est_folder)
+    for i in range(2):
+        print('Reproducing Table ' + str(i) + ':')
+        gt_folder = os.path.join(args.dataset_pathh, "meta_data", "episode_sed_eval_paper", "ground_truth", "Table" + str(i))
+        est_folder = os.path.join(args.dataset_path, "meta_data", "episode_sed_eval_paper", "AVCFillerNet_predictions", "Table" + str(i))
+        sed_eval_reproduce(gt_folder, est_folder)

@@ -3,7 +3,7 @@
 ## Introduction
 Utility functions for preprocessing PodcastFillers dataset and code for reproducing Table1 and Table2 in the [FillerNet paper](https://arxiv.org/abs/2203.15135) with AVC-FillerNet sed_eval predictions. 
 
-Dataset homepage: [PodcastFillers.github.io](PodcastFillers.github.io)
+Dataset homepage: [PodcastFillers.github.io](PodcastFillers.github.io)\
 Dataset zenodo page: [placeholder](zenodo.com)
 
 ## Requirements
@@ -16,12 +16,12 @@ pandas==1.1.5
 
 ### Preprocessing
 In preprocessing script, we first convert full-length MP3 podcast episodes into WAVs, then we cut 1-second event clips based on the meta csv with converted WAVs. Format conversion:
-```
+```python
 python preprocessing_script.py -dataset_path {dataset_path} -stage reformat
 ```
 
 Event clip WAV cut:
-```
+```python
 python preprocessing_script.py -dataset_path {dataset_path} -stage cut
 ```
 
@@ -29,7 +29,7 @@ For customized converted sampling rate or change event clip length keep event ce
 
 ### Results reproduction
 To reproduce the AVCFIllerNet results from Table.1 and Table.2 from our [paper](https://arxiv.org/abs/2203.15135), run
-```
+```python
 python reproduce_results.py -dataset_path {dataset_path}
 ```
 

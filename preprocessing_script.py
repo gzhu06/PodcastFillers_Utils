@@ -2,17 +2,12 @@ import glob, os
 from tqdm import tqdm
 import subprocess
 import soundfile
+import librosa
 import pandas as pd
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-dataset_path", required=True, type=str, help="root path for PodcastFillers dataset")
-parser.add_argument("-stage", required=True, type=str, choices=["reformat", "cut"], help="preprocessing step for extracting wav clips")
-args = parser.parse_args()
-
 SAMPLE_RATE = 16000
-DURATION_OFFSET = 0.0
-
+DURATION = 1.0
 
 def ffmpeg_convert(input_audiofile, output_audiofile, sr=SAMPLE_RATE):
     """
@@ -34,7 +29,7 @@ def ffmpeg_convert(input_audiofile, output_audiofile, sr=SAMPLE_RATE):
     """
 
     # fmpeg command
-    cmd = ["ffmpeg", "-i", input_audiofile, "-ac", "1", "-af", "aresample=resampler=soxr", "-ar", str(sr), output_audiofile]
+    cmd = ["ffmpeg", "-i", input_audiofile, "-ac", "1", "-af", "aresample=resampler=soxr", "-ar", str(sr), "-y", output_audiofile]
     completed_process = subprocess.run(cmd)
 
     # confrim process completed successfully
@@ -67,7 +62,7 @@ def reformat(ipt_folder, opt_folder, sr=SAMPLE_RATE):
         ffmpeg_convert(audiofile, opt_audiofile, sr)
 
 
-def generate_clip_wav(master_csvfile, full_folder, clip_folder, duration_offset=DURATION_OFFSET):
+def generate_clip_wav(master_csvfile, full_folder, clip_folder, duration=DURATION):
     """
     generate clips files from full podcast episodes for training
     filler classifier
@@ -99,19 +94,29 @@ def generate_clip_wav(master_csvfile, full_folder, clip_folder, duration_offset=
             continue
 
         # cut wav into clips based on filler metainfo
+        duration_offset = (duration - 1.0)/2.0
         cut_cmd = ["ffmpeg", "-i", src_filepath, "-ss", str(start_time-duration_offset), "-to", str(end_time+duration_offset), tar_filepath]
-        subprocess.run(cut_cmd)
+        completed_process = subprocess.run(cut_cmd)
+
+        actual_duration = librosa.get_duration(filename=tar_filepath)
+        assert actual_duration == duration
+
         # confrim process completed successfully
-        assert cut_cmd.returncode == 0
+        assert completed_process.returncode == 0
 
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-dataset_path", required=True, type=str, help="root path for PodcastFillers dataset")
+    parser.add_argument("-stage", required=True, type=str, choices=["reformat", "cut"], help="preprocessing step for extracting wav clips")
+    args = parser.parse_args()
+
     dataset_path = args.dataset_path
     master_csvfile = os.path.join(dataset_path, "metadata", "PodcastFillers.csv")
-    full_mp3_folder = os.path.join(dataset_path, "audio", "episodes_mp3")
-    full_wav_folder = os.path.join(dataset_path, "audio", "episodes_wav_regenerate")
-    clip_folder = os.path.join(dataset_path, "audio", "clips_wav_regenerate")
+    full_mp3_folder = os.path.join(dataset_path, "audio", "episode_mp3")
+    full_wav_folder = os.path.join(dataset_path, "audio", "episode_wav_regenerate")
+    clip_folder = os.path.join(dataset_path, "audio", "clip_wav_regenerate")
 
     # convert full-length MP3 into WAV
     if args.stage == "reformat":
@@ -119,7 +124,8 @@ if __name__ == "__main__":
 
     # generate clip wavs from full length WAV
     elif args.stage == "cut":
-        generate_clip_wav(master_csvfile, full_wav_folder, clip_folder, duration_offset=DURATION_OFFSET)
+        # it's required to run "reformat" stage first
+        generate_clip_wav(master_csvfile, full_wav_folder, clip_folder, duration=DURATION)
 
     else:
         print("Unknown operation!")

@@ -16,20 +16,23 @@ pandas==1.1.5
 
 ### Preprocessing
 In preprocessing script, we first convert full-length MP3 podcast episodes into WAVs, then we cut 1-second event clips based on the meta csv with converted WAVs. Format conversion:
-```python
+```
 python preprocessing_script.py -dataset_path {dataset_path} -stage reformat
 ```
 
 Event clip WAV cut:
-```python
+```
 python preprocessing_script.py -dataset_path {dataset_path} -stage cut
 ```
 
-For customized converted sampling rate or change event clip length keep event centered in the clip, revise parameters `SAMPLE_RATE` and `DURATION_OFFSET` in the code.
+We prepare two customized parameters to preprocessing event clips:
+- `SAMPLE_RATE` : Sampling rate for the converted WAV files, default value is 16kHz;
+- `DURATION`: Length of the event clips(unit: second), the filler/non-filler event will also be centered in the clip, the default value is 1.0 and it is larger than zero. 
+
+`reformat` and `generate_clip_wav` passed [pytest](https://docs.pytest.org/en/7.1.x/index.html) using `pytest -q test.py`:
 
 ### Results reproduction
 To reproduce the AVCFIllerNet results from Table.1 and Table.2 from our [paper](https://arxiv.org/abs/2203.15135), run
-```python
+```
 python reproduce_results.py -dataset_path {dataset_path}
 ```
-

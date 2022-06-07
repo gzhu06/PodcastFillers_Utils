@@ -12,13 +12,14 @@ DATA_ROOTPATH = '/Users/gzhu/Documents/datasets/Filler/sc_podcast/formal_release
 EPI_MP3_PATH = os.path.join(DATA_ROOTPATH, 'audio', 'episode_mp3', TEST_SPLIT)
 EPI_REG_PATH = os.path.join(DATA_ROOTPATH, 'audio', 'episode_wav', TEST_SPLIT)
 
-# regression test for generate_clip_wav
+# regression test for generate_clip_wav using validation files
 DURATION = 1.0
 CSV_NAME = 'LMScast_315 How to Create Profitable Online Courses and Membership Sites Even After Failures Along the Way.csv'
 CSV_REG_PATH = os.path.join(DATA_ROOTPATH, 'metadata', 'episode_annotations', TEST_SPLIT, CSV_NAME)
 CLIP_REG_PATH = os.path.join(DATA_ROOTPATH, 'audio', 'clip_wav', TEST_SPLIT)
 
 def test_episode_conversion(test_mp3_path=EPI_MP3_PATH, reg_wav_path=EPI_REG_PATH, sr=SR, atol=1e-4, rtol=1e-8):
+    # Convert MP3 files into temp folder and check
     
     with tempfile.TemporaryDirectory() as tmpdirname:
 
@@ -39,6 +40,7 @@ def test_episode_conversion(test_mp3_path=EPI_MP3_PATH, reg_wav_path=EPI_REG_PAT
 
 def test_event_clip(csvfile=CSV_REG_PATH, epi_folder=os.path.join(DATA_ROOTPATH,  'audio', 'episode_wav'), 
                     clip_reg_folder=CLIP_REG_PATH, duration=DURATION, sr=SR, atol=1e-4, rtol=1e-8):
+    # Cut clip WAV files from episode WAV files into temp folder and check
 
     with tempfile.TemporaryDirectory() as tmpdirname:
 

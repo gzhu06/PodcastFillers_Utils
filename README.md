@@ -29,10 +29,12 @@ We prepare two customized parameters to preprocessing event clips:
 - `SAMPLE_RATE` : Sampling rate for the converted WAV files, default value is 16kHz;
 - `DURATION`: Length of the event clips(unit: second), the filler/non-filler event will also be centered in the clip, the default value is 1.0 and it is larger than zero. 
 
-`reformat` and `generate_clip_wav` passed [pytest](https://docs.pytest.org/en/7.1.x/index.html) using `pytest -q test.py`.
-
 ### Results reproduction
 To reproduce the AVCFIllerNet results from Table.1 and Table.2 from our [paper](https://arxiv.org/abs/2203.15135), run
 ```
 python reproduce_results.py -dataset_path {dataset_path}
 ```
+
+### Regression test (for developers)
+
+`reformat` and `generate_clip_wav` passed [pytest](https://docs.pytest.org/en/7.1.x/index.html) using `pytest -q test.py`.

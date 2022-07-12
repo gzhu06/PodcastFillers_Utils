@@ -4,7 +4,7 @@
 Utility functions for preprocessing PodcastFillers dataset and code for reproducing Table1 and Table2 in the [FillerNet paper](https://arxiv.org/abs/2203.15135) with AVC-FillerNet sed_eval predictions. 
 
 Dataset homepage: [PodcastFillers.github.io](PodcastFillers.github.io)\
-Dataset zenodo page: [placeholder](zenodo.com)
+Dataset zenodo page: [Zenodo](https://zenodo.org/record/6609215#.Ys3rXuzMKdZ)
 
 ## Requirements
 tqdm==4.61.2\
